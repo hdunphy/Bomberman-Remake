@@ -19,7 +19,7 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
 
     private void Start()
     {
-        hasMove = false;
+        //isMoving = false;
         isAtMovePoint = true;
         isDead = false;
         movePoint = transform.position;
@@ -31,44 +31,57 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
         StopAllCoroutines();
     }
 
-    public void EndOfTurnAction()
+    public void StartTurnAction()
     {
+        //isMoving = true;
         hasMove = false;
+        isAtMovePoint = false;
         StartCoroutine(MoveToPosition());
     }
 
     private IEnumerator MoveToPosition()
     {
+        if (!hasMove)
+            yield return null;
         while (Vector3.Distance(transform.position, movePoint) > 0.05f)
         {
             transform.position = Vector3.MoveTowards(transform.position, movePoint, moveSpeed * Time.deltaTime);
             yield return null;
         }
         isAtMovePoint = true;
+        hasMove = false;
     }
 
     public void UsedAction()
     {
-        hasMove = true;
+        isAtMovePoint = true;
         movePoint = transform.position;
     }
 
     private void Update()
     {
-        //transform.position = Vector3.MoveTowards(transform.position, movePoint, moveSpeed * Time.deltaTime);
+        SetMove(inputVector);
+    }
 
+    public void SetInputVector(Vector2 _inputVector)
+    {
+        inputVector = _inputVector;
+    }
+
+    public void SetMove(Vector2 moveVector)
+    {
         if (isAtMovePoint)
         {
             bool _hasMove = false;
             Vector3 _newPosition = movePoint;
-            if (Mathf.Abs(inputVector.x) == 1f)
+            if (Mathf.Abs(moveVector.x) == 1f)
             {
-                _newPosition += new Vector3(inputVector.x, 0f);
+                _newPosition += new Vector3(moveVector.x, 0f);
                 _hasMove = true;
             }
-            else if (Mathf.Abs(inputVector.y) == 1f)
+            else if (Mathf.Abs(moveVector.y) == 1f)
             {
-                _newPosition += new Vector3(0f, inputVector.y);
+                _newPosition += new Vector3(0f, moveVector.y);
                 _hasMove = true;
             }
 
@@ -88,11 +101,6 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
         }
     }
 
-    public void SetInputVector(Vector2 _inputVector)
-    {
-        inputVector = _inputVector;
-    }
-
     private void OnDrawGizmos()
     {
         Gizmos.color = MovePointColor;
@@ -100,10 +108,10 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
         Gizmos.DrawSphere(movePoint, .2f);
     }
 
-    public bool HasAction()
+    public bool IsTurnOver()
     {
         PreActionCallback?.Invoke();
-        return hasMove;
+        return isAtMovePoint;
     }
 
     public bool IsDead()

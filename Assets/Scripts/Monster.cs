@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(EntityGridMove))]
-public class Monster : MonoBehaviour, IEntityAction
+public class Monster : MonoBehaviour
 {
     [SerializeField] private EntityGridMove EntityGridMove;
     [SerializeField] private LayerMask collisionLayer;
@@ -17,24 +17,27 @@ public class Monster : MonoBehaviour, IEntityAction
     // Start is called before the first frame update
     void Start()
     {
-        EntityMoveManager.Instance.AddEntity(this);
+        EntityMoveManager.Instance.AddEntity(EntityGridMove);
         GetPlayer();
-        //EntityGridMove.PreActionCallback += SetMove;
+        EntityGridMove.PreActionCallback += SetMove;
     }
 
     private void OnDestroy()
     {
+        EntityGridMove.PreActionCallback -= SetMove;
         isDead = true;
     }
-    //private void OnDestroy()
-    //{
-    //    EntityGridMove.PreActionCallback -= SetMove;
-    //}
 
     public void GetPlayer()
     {
         player = FindObjectOfType<Player>();
         PlayerLastPosition = player.transform.position;
+    }
+
+    private void Update()
+    {
+        if (EntityGridMove.isAtMovePoint)
+            EntityGridMove.SetInputVector(Vector2.zero);
     }
 
     private void SetMove()
@@ -88,31 +91,31 @@ public class Monster : MonoBehaviour, IEntityAction
         return Mathf.RoundToInt(Mathf.Abs(player.transform.position.x - move.x) + Mathf.Abs(player.transform.position.y - move.y));
     }
 
-    public bool IsDead()
-    {
-        return isDead;
-    }
+    //public bool IsDead()
+    //{
+    //    return isDead;
+    //}
 
-    public bool HasAction()
-    {
-        return true;
-    }
+    //public bool IsTurnOver()
+    //{
+    //    return true;
+    //}
 
-    public void EndOfTurnAction()
-    {
-        if(player != null)
-        {
-            var Move = FindMove() + new Vector2(transform.position.x, transform.position.y);
-            StartCoroutine(MoveToPosition(Move));
-        }
-    }
+    //public void StartTurnAction()
+    //{
+    //    if(player != null)
+    //    {
+    //        var Move = FindMove() + new Vector2(transform.position.x, transform.position.y);
+    //        StartCoroutine(MoveToPosition(Move));
+    //    }
+    //}
 
-    private IEnumerator MoveToPosition(Vector3 movePoint)
-    {
-        while (Vector3.Distance(transform.position, movePoint) > 0.05f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, movePoint, 5 * Time.deltaTime);
-            yield return null;
-        }
-    }
+    //private IEnumerator MoveToPosition(Vector3 movePoint)
+    //{
+    //    while (Vector3.Distance(transform.position, movePoint) > 0.05f)
+    //    {
+    //        transform.position = Vector3.MoveTowards(transform.position, movePoint, 5 * Time.deltaTime);
+    //        yield return null;
+    //    }
+    //}
 }

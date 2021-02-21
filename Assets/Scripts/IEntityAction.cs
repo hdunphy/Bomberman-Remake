@@ -5,6 +5,6 @@ using UnityEngine;
 public interface IEntityAction
 {
     bool IsDead();
-    bool HasAction();
-    void EndOfTurnAction();
+    bool IsTurnOver();
+    void StartTurnAction();
 }

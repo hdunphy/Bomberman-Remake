@@ -11,6 +11,7 @@ public class Bomb : MonoBehaviour, IEntityAction
     [SerializeField] private LayerMask Layers;
 
     private bool isDead = false;
+    private bool isTurnOver = false;
 
     private void Start()
     {
@@ -22,8 +23,9 @@ public class Bomb : MonoBehaviour, IEntityAction
         isDead = true;
     }
 
-    public void EndOfTurnAction()
+    public void StartTurnAction()
     {
+        isTurnOver = false;
         if (--ticksLeft <= 0)
         {
             ExplodeBomb();
@@ -45,6 +47,7 @@ public class Bomb : MonoBehaviour, IEntityAction
         Debug.Log("Explode");
         //isDead = true;
         Destroy(gameObject);
+        isTurnOver = true;
     }
 
     private void OnDrawGizmos()
@@ -54,9 +57,9 @@ public class Bomb : MonoBehaviour, IEntityAction
         Gizmos.DrawSphere(transform.position, radius);
     }
 
-    public bool HasAction()
+    public bool IsTurnOver()
     {
-        return true;
+        return isTurnOver;
     }
 
     public bool IsDead()

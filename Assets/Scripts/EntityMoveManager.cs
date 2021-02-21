@@ -39,6 +39,7 @@ public class EntityMoveManager : MonoBehaviour
 
     private void UpdateAction()
     {
+        //Need to initialize with startturnaction
         IEntityAction CurrentEntity = Entities[CurrentIndex];
         
         if (CurrentEntity == null || CurrentEntity.IsDead())
@@ -46,9 +47,8 @@ public class EntityMoveManager : MonoBehaviour
             Entities.RemoveAt(CurrentIndex);
             UpdateIndex();
         }
-        else if (CurrentEntity.HasAction())
+        else if (CurrentEntity.IsTurnOver())
         {
-            CurrentEntity.EndOfTurnAction();
             UpdateIndex();
         }
     }
@@ -57,10 +57,16 @@ public class EntityMoveManager : MonoBehaviour
     {
         if (++CurrentIndex >= Entities.Count)
             CurrentIndex = 0;
+
+        IEntityAction CurrentEntity = Entities[CurrentIndex];
+        if (CurrentEntity != null && !CurrentEntity.IsDead())
+            CurrentEntity.StartTurnAction();
     }
 
     public void AddEntity(IEntityAction entity)
     {
         Entities.Add(entity);
+        if (Entities.Count == 1)
+            Entities[0].StartTurnAction();
     }
 }
