@@ -4,23 +4,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Bomb : MonoBehaviour
+public class Bomb : MonoBehaviour, IEntityAction
 {
     [SerializeField] private int ticksLeft = 3;
     [SerializeField] private float radius = 1f;
     [SerializeField] private LayerMask Layers;
-    // Start is called before the first frame update
-    void Start()
+
+    private bool isDead = false;
+
+    private void Start()
     {
-        EventManager.Instance.MoveUpdate += UpdateBomb;
+        EntityMoveManager.Instance.AddEntity(this);
     }
 
     private void OnDestroy()
     {
-        EventManager.Instance.MoveUpdate -= UpdateBomb;
+        isDead = true;
     }
 
-    private void UpdateBomb()
+    public void EndOfTurnAction()
     {
         if (--ticksLeft <= 0)
         {
@@ -41,7 +43,8 @@ public class Bomb : MonoBehaviour
 
         EventManager.Instance.OnTriggerExplodeBomb(transform.position, radius);
         Debug.Log("Explode");
-        Destroy(gameObject, 0.5f);
+        //isDead = true;
+        Destroy(gameObject);
     }
 
     private void OnDrawGizmos()
@@ -49,5 +52,15 @@ public class Bomb : MonoBehaviour
         Gizmos.color = Color.white;
 
         Gizmos.DrawSphere(transform.position, radius);
+    }
+
+    public bool HasAction()
+    {
+        return true;
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
     }
 }

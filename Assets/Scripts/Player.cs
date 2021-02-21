@@ -12,6 +12,16 @@ public class Player : MonoBehaviour
 
     private Bomb placedBomb = null;
 
+    private void Start()
+    {
+        EntityMoveManager.Instance.AddEntity(EntityGridMove);
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.Instance.OnTriggerPlayerDies();
+    }
+
     public void OnMove(InputValue _inputValue)
     {
         EntityGridMove.SetInputVector(_inputValue.Get<Vector2>());
@@ -20,7 +30,10 @@ public class Player : MonoBehaviour
     public void OnFire(InputValue _inputValue)
     {
         Debug.Log("FIRE");
-        if (_inputValue.isPressed && placedBomb == null && !EntityGridMove.IsNewPosition)
+        if (_inputValue.isPressed && placedBomb == null && EntityGridMove.isAtMovePoint)
+        {
             placedBomb = Instantiate(BombPrefab, transform.position, Quaternion.identity);
+            EntityGridMove.UsedAction();
+        }
     }
 }

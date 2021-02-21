@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8857308309939065575}
   - component: {fileID: 1491231148932951281}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TileMap_Crate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,9 +93,9 @@ GameObject:
   - component: {fileID: 4932412836755510198}
   - component: {fileID: 2683131922336028354}
   - component: {fileID: 8686174445732533990}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Crate
-  m_TagString: Untagged
+  m_TagString: Crate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

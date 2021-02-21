@@ -3,33 +3,50 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EndGameUIController : MonoBehaviour
 {
     [SerializeField] GameObject Popup;
     [SerializeField] TextMeshProUGUI PopupText;
+    [SerializeField] Button NextLevelButton;
+    public Text Text;
 
     // Start is called before the first frame update
     void Start()
     {
         Popup.SetActive(false);
         EventManager.Instance.PlayerExit += PlayerWins;
+        EventManager.Instance.PlayerDies += PlayerLoses;
     }
 
     private void OnDestroy()
     {
         EventManager.Instance.PlayerExit -= PlayerWins;
+        EventManager.Instance.PlayerDies -= PlayerLoses;
     }
 
     private void PlayerWins()
     {
+        NextLevelButton.gameObject.SetActive(true);
         ShowPopup("Player Wins");
+    }
+
+    private void PlayerLoses()
+    {
+        NextLevelButton.gameObject.SetActive(false);
+        ShowPopup("Player Loses");
     }
 
     public void ShowPopup(string _message)
     {
         PopupText.text = _message;
         Popup.SetActive(true);
+    }
+
+    public void ShowMessageString(string _message)
+    {
+        Text.text = _message;
     }
 
     public void Quit()

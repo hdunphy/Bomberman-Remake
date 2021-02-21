@@ -21,17 +21,18 @@ public class EventManager : MonoBehaviour
     }
 
     public Action PlayerExit;
-    public Action MoveUpdate;
+    public Action PlayerDies;
+
+    public void OnTriggerPlayerDies()
+    {
+        PlayerDies?.Invoke();
+    }
+
     public Action<Vector3, float> ExplodeBomb;
 
     public void OnTriggerPlayerExit()
     {
         PlayerExit?.Invoke();
-    }
-
-    public void OnTriggerMoveUpdate()
-    {
-        MoveUpdate?.Invoke();
     }
 
     public void OnTriggerExplodeBomb(Vector3 position, float radius)
