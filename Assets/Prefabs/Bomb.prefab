@@ -44,7 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 955e1b011b6bbf741809ff644926364a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ticksLeft: 3
+  ticksLeft: 4
+  radius: 1.2
 --- !u!1 &3222698946873098478
 GameObject:
   m_ObjectHideFlags: 0

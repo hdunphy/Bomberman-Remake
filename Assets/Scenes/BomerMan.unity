@@ -4049,7 +4049,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartAreaTopLeft: {x: 0, y: 0}
-  StartAreaBottomRight: {x: 2, y: 2}
+  StartAreaBottomRight: {x: 2, y: -2}
   width: 14
   height: -15
   scale: 100

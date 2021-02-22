@@ -6,16 +6,16 @@ using UnityEngine;
 public class EntityGridMove : MonoBehaviour, IEntityAction
 {
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private LayerMask collisionLayer;
-    public Color MovePointColor = Color.red;
-    public Action PreActionCallback;
 
     public bool isAtMovePoint { get; private set; }
 
     private bool isDead;
-    private bool hasMove;
-    private Vector2 inputVector;
     private Vector2 movePoint;
+
+
+    private IEntityController Controller;
+    private Dictionary<MoveState, MoveStateBase> ActionState;
+    private MoveState CurrentMove;
 
     private void Start()
     {
@@ -23,6 +23,16 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
         isAtMovePoint = true;
         isDead = false;
         movePoint = transform.position;
+        Controller = GetComponent<IEntityController>();
+
+        EntityMoveManager.Instance.AddEntity(this);
+        ActionState = new Dictionary<MoveState, MoveStateBase>() {
+            { MoveState.Waiting, MoveStateFactory.CreateMoveState(MoveState.Waiting, this)},
+            { MoveState.HasMove, MoveStateFactory.CreateMoveState(MoveState.HasMove, this)},
+            { MoveState.InProcess, MoveStateFactory.CreateMoveState(MoveState.InProcess, this)},
+            { MoveState.Done, MoveStateFactory.CreateMoveState(MoveState.Done, this)},
+        };
+        CurrentMove = MoveState.Waiting;
     }
 
     private void OnDestroy()
@@ -31,91 +41,59 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
         StopAllCoroutines();
     }
 
-    public void StartTurnAction()
+    public void SetController(IEntityController controller)
     {
-        //isMoving = true;
-        hasMove = false;
-        isAtMovePoint = false;
-        StartCoroutine(MoveToPosition());
+        Controller = controller;
     }
 
     private IEnumerator MoveToPosition()
     {
-        if (!hasMove)
-            yield return null;
         while (Vector3.Distance(transform.position, movePoint) > 0.05f)
         {
             transform.position = Vector3.MoveTowards(transform.position, movePoint, moveSpeed * Time.deltaTime);
             yield return null;
         }
         isAtMovePoint = true;
-        hasMove = false;
-    }
-
-    public void UsedAction()
-    {
-        isAtMovePoint = true;
-        movePoint = transform.position;
-    }
-
-    private void Update()
-    {
-        SetMove(inputVector);
-    }
-
-    public void SetInputVector(Vector2 _inputVector)
-    {
-        inputVector = _inputVector;
-    }
-
-    public void SetMove(Vector2 moveVector)
-    {
-        if (isAtMovePoint)
-        {
-            bool _hasMove = false;
-            Vector3 _newPosition = movePoint;
-            if (Mathf.Abs(moveVector.x) == 1f)
-            {
-                _newPosition += new Vector3(moveVector.x, 0f);
-                _hasMove = true;
-            }
-            else if (Mathf.Abs(moveVector.y) == 1f)
-            {
-                _newPosition += new Vector3(0f, moveVector.y);
-                _hasMove = true;
-            }
-
-            if (Physics2D.OverlapCircle(_newPosition, 0.2f, collisionLayer))
-            { //if the new position collides with a collider. Can't move so reset _hasMove to false
-                _hasMove = false;
-            }
-            else
-            { //else the move is valid set the movePoint and keep _hasMove to true
-                movePoint = _newPosition;
-            }
-
-            //if _hasMove is true then is not at MovePoint
-            //if _hasMove is false then has no new move and value should still be same
-            isAtMovePoint = !_hasMove && isAtMovePoint; //simplified of:  = !_hasMove ? false : isAtMovepoint
-            hasMove = _hasMove;
-        }
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = MovePointColor;
-
-        Gizmos.DrawSphere(movePoint, .2f);
-    }
-
-    public bool IsTurnOver()
-    {
-        PreActionCallback?.Invoke();
-        return isAtMovePoint;
     }
 
     public bool IsDead()
     {
         return isDead;
+    }
+
+    public bool ReadInput()
+    {
+        bool hasInput = false;
+        Vector2? move = Controller.ReadInput();
+        if (move.HasValue)
+        {
+            movePoint = move.Value;
+            hasInput = true;
+        }
+
+        return hasInput;
+    }
+
+    public void StartMove()
+    {
+        isAtMovePoint = false;
+        StartCoroutine(MoveToPosition());
+    }
+
+    public bool IsActionComplete()
+    {
+        return isAtMovePoint;
+    }
+
+    public void EndOfTurnAction()
+    {
+        Controller.EndOfTurnAction();
+    }
+
+    public bool UpdateState()
+    {
+        CurrentMove = ActionState[CurrentMove].UpdateState();
+
+        return (CurrentMove.Equals(MoveState.Done));
     }
 }

@@ -3,53 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(EntityGridMove))]
-public class Monster : MonoBehaviour
+public class Monster : MonoBehaviour, IEntityController
 {
-    [SerializeField] private EntityGridMove EntityGridMove;
     [SerializeField] private LayerMask collisionLayer;
 
     private Player player;
-    private Vector2 PlayerLastPosition;
-    private bool isDead = false;
     private readonly List<Vector2> Directions = new List<Vector2>() { Vector2.up, Vector2.left, Vector2.right, Vector2.down };
 
     // Start is called before the first frame update
     void Start()
     {
-        EntityMoveManager.Instance.AddEntity(EntityGridMove);
         GetPlayer();
-        EntityGridMove.PreActionCallback += SetMove;
     }
 
-    private void OnDestroy()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        EntityGridMove.PreActionCallback -= SetMove;
-        isDead = true;
+        if(collision.otherCollider.TryGetComponent(out Player _player))
+        {
+            _player.GetComponent<IDeathBehavior>().Die();
+        }
     }
 
     public void GetPlayer()
     {
         player = FindObjectOfType<Player>();
-        PlayerLastPosition = player.transform.position;
-    }
-
-    private void Update()
-    {
-        if (EntityGridMove.isAtMovePoint)
-            EntityGridMove.SetInputVector(Vector2.zero);
-    }
-
-    private void SetMove()
-    {
-        if (player != null)
-        {
-            Vector2 move = FindMove();
-            if (move.x == 0 && move.y == 0)
-                EntityGridMove.UsedAction();
-            else
-                EntityGridMove.SetInputVector(move);
-        }
     }
 
     private Vector2 GetPlayerDirection()
@@ -62,25 +39,20 @@ public class Monster : MonoBehaviour
             playerDir.x = Mathf.Sign(difference.x);
         if (Mathf.Abs(difference.y) > 0)
             playerDir.y = Mathf.Sign(difference.y);
-        //Vector2 playerPos = player.transform.position;
-        //Vector2 myPos = transform.position;
-        //if (playerPos.x - myPos.x > 0)
-        //    playerDir.x = 1;
-        //else if (playerPos.x - myPos.x < 0)
-        //    playerDir.x = -1;
         return playerDir;
     }
 
     private Vector2 FindMove()
     {
-        Vector2 nextMove = Vector2.zero;
-        int currentDistance = GetDistanceToPlayer(transform.position);
+        Vector2 nextMove = transform.position;
+        int currentDistance = GetDistanceToPlayer(nextMove);
 
         foreach (Vector2 move in Directions)
         {
             Vector2 _move = move + new Vector2(transform.position.x, transform.position.y);
-            if (!Physics2D.OverlapCircle(_move, 0.2f, collisionLayer) && GetDistanceToPlayer(_move) <= currentDistance)
-                nextMove = move;
+            Collider2D collider = Physics2D.OverlapCircle(_move, 0.2f, collisionLayer);
+            if (!collider && GetDistanceToPlayer(_move) <= currentDistance)
+                nextMove = _move;
         }
 
         return nextMove;
@@ -91,31 +63,22 @@ public class Monster : MonoBehaviour
         return Mathf.RoundToInt(Mathf.Abs(player.transform.position.x - move.x) + Mathf.Abs(player.transform.position.y - move.y));
     }
 
-    //public bool IsDead()
-    //{
-    //    return isDead;
-    //}
+    public Vector2? ReadInput()
+    {
+        Vector2? move = null;
+        if (player != null)
+        {
+            move = FindMove();
+            if (GetDistanceToPlayer(move.Value) == 0)
+                player.GetComponent<IDeathBehavior>().Die();
+        }
 
-    //public bool IsTurnOver()
-    //{
-    //    return true;
-    //}
+        Debug.Log($"Monster move {move}");
+        return move;
+    }
 
-    //public void StartTurnAction()
-    //{
-    //    if(player != null)
-    //    {
-    //        var Move = FindMove() + new Vector2(transform.position.x, transform.position.y);
-    //        StartCoroutine(MoveToPosition(Move));
-    //    }
-    //}
-
-    //private IEnumerator MoveToPosition(Vector3 movePoint)
-    //{
-    //    while (Vector3.Distance(transform.position, movePoint) > 0.05f)
-    //    {
-    //        transform.position = Vector3.MoveTowards(transform.position, movePoint, 5 * Time.deltaTime);
-    //        yield return null;
-    //    }
-    //}
+    public void EndOfTurnAction()
+    {
+        //Nothing
+    }
 }

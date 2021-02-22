@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 7624827685552282177}
   - component: {fileID: 7624827685552282176}
   - component: {fileID: 7624827685552282179}
-  - component: {fileID: 7624827685552282239}
+  - component: {fileID: 187581326379014263}
   - component: {fileID: 7624827685552282236}
   - component: {fileID: 7624827685552282237}
   - component: {fileID: -9093750563359766041}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Monster
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -113,7 +113,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.95, y: 0.95}
   m_EdgeRadius: 0
---- !u!50 &7624827685552282239
+--- !u!50 &187581326379014263
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -147,10 +147,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  collisionLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  MovePointColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &7624827685552282237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,8 +171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c0727bec908927489b499d328ca7abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EntityGridMove: {fileID: 7624827685552282236}
   collisionLayer:
     serializedVersion: 2
     m_Bits: 256
-  Text: {fileID: 0}

@@ -76,13 +76,12 @@ public class LevelGenerator : MonoBehaviour
             }
         }
 
-        Instantiate(PlayerPrefab, PlayerStartPositon, Quaternion.identity);
-
         for(int i = 0; i < NumberOfMonsters; i++)
         {
             Monster _monster = Instantiate(MonsterPrefab, GetRandomAvailableVectorInLevel(), Quaternion.identity);
-            //_monster.GetPlayer();
         }
+
+        Instantiate(PlayerPrefab, PlayerStartPositon, Quaternion.identity);
     }
 
     private Vector2 GetRandomAvailableVectorInLevel()
