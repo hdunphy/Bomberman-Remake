@@ -9,6 +9,7 @@ public class EntityMoveManager : MonoBehaviour
     private int CurrentIndex;
 
     public static EntityMoveManager Instance;
+    public static readonly List<Vector2> Directions = new List<Vector2>() { Vector2.up, Vector2.left, Vector2.right, Vector2.down };
 
     private void Awake()
     {

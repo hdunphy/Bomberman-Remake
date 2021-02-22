@@ -10,6 +10,8 @@ public class EndGameUIController : MonoBehaviour
     [SerializeField] GameObject Popup;
     [SerializeField] TextMeshProUGUI PopupText;
     [SerializeField] Button NextLevelButton;
+    [SerializeField] LevelGenerator LevelGenerator;
+
     public Text Text;
 
     // Start is called before the first frame update
@@ -58,10 +60,14 @@ public class EndGameUIController : MonoBehaviour
     public void Replay()
     {
         Debug.Log("Replay");
+        LevelGenerator.ReplayLevel();
+        Popup.SetActive(false);
     }
 
     public void NextLevel()
     {
         Debug.Log("Next level");
+        LevelGenerator.NextLevel();
+        Popup.SetActive(false);
     }
 }

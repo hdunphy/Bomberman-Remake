@@ -10,6 +10,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private Vector2Int StartAreaBottomRight;
 
     [Header("Perlin Noise Factors")]
+    [SerializeField] private int randomSeed;
     [SerializeField] private int width;
     [SerializeField] private int height;
     [SerializeField] private float scale;
@@ -19,6 +20,7 @@ public class LevelGenerator : MonoBehaviour
     [Header("Crate Placement")]
     [SerializeField] private GameObject CratePrefab;
     [SerializeField] private Transform ObstacleTransform;
+    [SerializeField] private float CratePercentageChance;
 
     [Header("Player")]
     [SerializeField] private Player PlayerPrefab;
@@ -29,23 +31,19 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private int NumberOfMonsters;
 
     /* -------- Internal Variables --------- */
-    //private List<Vector2> CrateStartPositions;
+    private System.Random Random;
 
     private void Start()
     {
+        Random = new System.Random(randomSeed);
         GenerateLevel();
     }
 
     private void GenerateLevel()
     {
-        //CrateStartPositions = new List<Vector2>();
-
         int yModifier;
         int xModifier = yModifier = 1;
-        //int startX = width > 0 ? 0 : width;
-        //int startY = height > 0 ? 0 : height;
-        //int endX = width > 0 ? width : 0;
-        //int endY = height > 0 ? height : 0;
+
         if (width < 0)
             xModifier = -1;
         if (height < 0)
@@ -57,11 +55,9 @@ public class LevelGenerator : MonoBehaviour
                 float x = (float)i / width * scale + offsetX;
                 float y = (float)j / height * scale + offsetY;
                 float noise = Mathf.PerlinNoise(x, y);
-                if (noise > 0.5f)
+                if (noise > CratePercentageChance)
                 {
                     Vector3 pos = new Vector3(i * xModifier, j * yModifier, 0f);
-                    //CrateStartPositions.Add(pos);
-                    //Debug.Log($"(i, j) ({i}, {j})\n{pos}");
                     Instantiate(CratePrefab, pos, Quaternion.identity, ObstacleTransform);
                 }
             }
@@ -76,18 +72,40 @@ public class LevelGenerator : MonoBehaviour
             }
         }
 
+        Instantiate(PlayerPrefab, PlayerStartPositon, Quaternion.identity);
+
         for(int i = 0; i < NumberOfMonsters; i++)
         {
             Monster _monster = Instantiate(MonsterPrefab, GetRandomAvailableVectorInLevel(), Quaternion.identity);
         }
-
-        Instantiate(PlayerPrefab, PlayerStartPositon, Quaternion.identity);
     }
 
     private Vector2 GetRandomAvailableVectorInLevel()
     {
-        int monsterX = UnityEngine.Random.Range(StartAreaBottomRight.x, width);
-        int monsterY = UnityEngine.Random.Range(StartAreaBottomRight.y, height);
+        int startX, endX, startY, endY;
+        if (StartAreaBottomRight.x > width)
+        {
+            startX = width;
+            endX = StartAreaBottomRight.x;
+        }
+        else
+        {
+            startX = StartAreaBottomRight.x;
+            endX = width;
+        }
+        if (StartAreaBottomRight.y > height)
+        {
+            startY = height;
+            endY = StartAreaBottomRight.y;
+        }
+        else
+        {
+            startY = StartAreaBottomRight.y;
+            endY = height;
+        }
+
+        int monsterX = Random.Next(startX, endX);
+        int monsterY = Random.Next(startY, endY);
         Vector2 RandomVector = new Vector2(monsterX, monsterY);
 
         if (Physics2D.OverlapCircle(RandomVector, 0.2f))
@@ -96,5 +114,37 @@ public class LevelGenerator : MonoBehaviour
         }
 
         return RandomVector;
+    }
+
+    private void ClearLevel()
+    {
+        foreach(Transform child in ObstacleTransform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (Player _player in FindObjectsOfType<Player>())
+            Destroy(_player.gameObject);
+
+        foreach (Monster _monster in FindObjectsOfType<Monster>())
+            Destroy(_monster.gameObject);
+
+        foreach (Bomb _bomb in FindObjectsOfType<Bomb>())
+            Destroy(_bomb.gameObject);
+    }
+
+    public void ReplayLevel()
+    {
+        ClearLevel();
+        GenerateLevel();
+    }
+
+    public void NextLevel()
+    {
+        ClearLevel();
+        randomSeed++;
+        Random = new System.Random(randomSeed);
+        NumberOfMonsters++;
+        GenerateLevel();
     }
 }

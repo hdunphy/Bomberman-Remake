@@ -8,7 +8,6 @@ public class Monster : MonoBehaviour, IEntityController
     [SerializeField] private LayerMask collisionLayer;
 
     private Player player;
-    private readonly List<Vector2> Directions = new List<Vector2>() { Vector2.up, Vector2.left, Vector2.right, Vector2.down };
 
     // Start is called before the first frame update
     void Start()
@@ -47,7 +46,7 @@ public class Monster : MonoBehaviour, IEntityController
         Vector2 nextMove = transform.position;
         int currentDistance = GetDistanceToPlayer(nextMove);
 
-        foreach (Vector2 move in Directions)
+        foreach (Vector2 move in EntityMoveManager.Directions)
         {
             Vector2 _move = move + new Vector2(transform.position.x, transform.position.y);
             Collider2D collider = Physics2D.OverlapCircle(_move, 0.2f, collisionLayer);

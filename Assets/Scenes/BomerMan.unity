@@ -4049,7 +4049,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartAreaTopLeft: {x: 0, y: 0}
-  StartAreaBottomRight: {x: 2, y: -2}
+  StartAreaBottomRight: {x: 1, y: -2}
+  randomSeed: 0
   width: 14
   height: -15
   scale: 100
@@ -4057,6 +4058,7 @@ MonoBehaviour:
   offsetY: 5
   CratePrefab: {fileID: 7567089688346558259, guid: c507fcd8e8303e743a78ad0064ef67f3, type: 3}
   ObstacleTransform: {fileID: 1362638260}
+  CratePercentageChance: 0.5
   PlayerPrefab: {fileID: 7624827685552282178, guid: 1002aa9dadfe68349beb7ef7bb3f917f, type: 3}
   PlayerStartPositon: {x: 0, y: 0, z: 0}
   MonsterPrefab: {fileID: -9093750563359766041, guid: 9de3fe18b7206014ea40a80135d2ff0d, type: 3}
@@ -6219,6 +6221,7 @@ MonoBehaviour:
   Popup: {fileID: 1610252571}
   PopupText: {fileID: 543451268}
   NextLevelButton: {fileID: 1258786850}
+  LevelGenerator: {fileID: 632374764}
   Text: {fileID: 0}
 --- !u!1 &1426640013
 GameObject:

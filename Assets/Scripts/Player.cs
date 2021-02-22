@@ -29,11 +29,6 @@ public class Player : MonoBehaviour, IEntityController
         GetComponent<Rigidbody2D>().freezeRotation = true;
     }
 
-    private void OnDestroy()
-    {
-        EventManager.Instance.OnTriggerPlayerDies();
-    }
-
     private void Update()
     {
         SetMove(inputVector);
@@ -43,7 +38,7 @@ public class Player : MonoBehaviour, IEntityController
     {
         Gizmos.color = MovePointColor;
 
-        if(movePoint.HasValue)
+        if (movePoint.HasValue)
             Gizmos.DrawSphere(movePoint.Value, .2f);
     }
 
@@ -85,7 +80,7 @@ public class Player : MonoBehaviour, IEntityController
             { //if the new position collides with a collider. Can't move so reset _hasMove to false
                 _hasMove = false;
             }
-            else if(_hasMove)
+            else if (_hasMove)
             { //else the move is valid set the movePoint and keep _hasMove to true
                 movePoint = _newPosition;
             }
@@ -96,9 +91,27 @@ public class Player : MonoBehaviour, IEntityController
         }
     }
 
+    private bool IsStuck()
+    {
+        bool canMove = false;
+        foreach (Vector2 _move in EntityMoveManager.Directions)
+        {
+            Vector2 move = _move + new Vector2(transform.position.x, transform.position.y);
+            if (!Physics2D.OverlapCircle(move, 0.2f, collisionLayer))
+            {
+                canMove = true;
+                break;
+            }
+        }
+        return !canMove;
+    }
+
     public Vector2? ReadInput()
     {
         Vector2? input;
+        if (IsStuck())
+            GetComponent<EntityDeathBehavior>().Die();
+
         if (isSettingBomb)
         {
             placedBomb = Instantiate(BombPrefab, transform.position, Quaternion.identity);
@@ -114,7 +127,7 @@ public class Player : MonoBehaviour, IEntityController
     public void EndOfTurnAction()
     {
         //Make sure the position isn't offset and leads to weird collisions
-        transform.position = Vector3Int.RoundToInt(transform.position); 
+        transform.position = Vector3Int.RoundToInt(transform.position);
 
         //Reset turn variables
         isSettingBomb = false;
