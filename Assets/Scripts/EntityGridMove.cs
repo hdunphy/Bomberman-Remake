@@ -6,6 +6,7 @@ using UnityEngine;
 public class EntityGridMove : MonoBehaviour, IEntityAction
 {
     [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private Animator animator;
 
     public bool isAtMovePoint { get; private set; }
 
@@ -33,6 +34,9 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
             { MoveState.Done, MoveStateFactory.CreateMoveState(MoveState.Done, this)},
         };
         CurrentMove = MoveState.Waiting;
+
+
+        animator.SetBool("IsIdle", true);
     }
 
     private void OnDestroy()
@@ -48,12 +52,21 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
 
     private IEnumerator MoveToPosition()
     {
+        Vector2 dir = movePoint - new Vector2(transform.position.x, transform.position.y);
+        animator.SetBool("IsIdle", false);
+        //animator.SetFloat("MoveHorizontal", dir.x);
+        //animator.SetFloat("MoveVertical", dir.y);
+
         while (Vector3.Distance(transform.position, movePoint) > 0.05f)
         {
             transform.position = Vector3.MoveTowards(transform.position, movePoint, moveSpeed * Time.deltaTime);
             yield return null;
         }
+
         isAtMovePoint = true;
+        animator.SetBool("IsIdle", true);
+        //animator.SetFloat("MoveHorizontal", 0f);
+        //animator.SetFloat("MoveVertical", 0f);
     }
 
     public bool IsDead()

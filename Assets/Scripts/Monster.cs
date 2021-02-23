@@ -12,6 +12,7 @@ public class Monster : MonoBehaviour, IEntityController
     // Start is called before the first frame update
     void Start()
     {
+        GetComponent<Rigidbody2D>().freezeRotation = true;
         GetPlayer();
     }
 
