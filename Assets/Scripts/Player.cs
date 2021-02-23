@@ -110,7 +110,7 @@ public class Player : MonoBehaviour, IEntityController
     {
         Vector2? input;
         if (IsStuck())
-            GetComponent<EntityDeathBehavior>().Die();
+            GetComponent<PlayerDeathBehavior>().Die();
 
         if (isSettingBomb)
         {

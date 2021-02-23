@@ -79,6 +79,7 @@ public class Monster : MonoBehaviour, IEntityController
 
     public void EndOfTurnAction()
     {
-        //Nothing
+        //Make sure the position isn't offset and leads to weird collisions
+        transform.position = Vector3Int.RoundToInt(transform.position);
     }
 }
