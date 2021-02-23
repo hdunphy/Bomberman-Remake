@@ -6,13 +6,14 @@ public class PlayerDeathBehavior : MonoBehaviour, IDeathBehavior
 {
     public void Die()
     {
-        Invoke(nameof(DeathActions), 1f);
+        StartCoroutine(DeathActions());
         GetComponent<Player>().enabled = false;
         GetComponent<SpriteRenderer>().enabled = false;
     }
 
-    private void DeathActions()
+    private IEnumerator DeathActions()
     {
+        yield return new WaitForSeconds(1f);
         EventManager.Instance.OnTriggerPlayerDies();
         Destroy(gameObject);
     }

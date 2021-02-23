@@ -110,7 +110,12 @@ public class Player : MonoBehaviour, IEntityController
     {
         Vector2? input;
         if (IsStuck())
+        {
+            //StartCoroutine(AudioManager.Instance.PlayAndWaitForSound("Monster Bite", GetComponent<PlayerDeathBehavior>().Die));
+            AudioManager.Instance.PlaySound("Monster Bite");
+            GetComponent<EntityGridMove>().SetDead();
             GetComponent<PlayerDeathBehavior>().Die();
+        }
 
         if (isSettingBomb)
         {

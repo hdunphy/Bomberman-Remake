@@ -30,12 +30,14 @@ public class EndGameUIController : MonoBehaviour
 
     private void PlayerWins()
     {
+        AudioManager.Instance.PlaySound("Win");
         NextLevelButton.gameObject.SetActive(true);
         ShowPopup("Player Wins");
     }
 
     private void PlayerLoses()
     {
+        AudioManager.Instance.PlaySound("Lose");
         NextLevelButton.gameObject.SetActive(false);
         ShowPopup("Player Loses");
     }

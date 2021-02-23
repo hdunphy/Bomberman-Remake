@@ -21,6 +21,7 @@ public class Monster : MonoBehaviour, IEntityController
         if(collision.otherCollider.TryGetComponent(out Player _player))
         {
             _player.GetComponent<IDeathBehavior>().Die();
+            AudioManager.Instance.PlaySound("Monster Bite");
         }
     }
 
@@ -73,7 +74,6 @@ public class Monster : MonoBehaviour, IEntityController
                 player.GetComponent<IDeathBehavior>().Die();
         }
 
-        Debug.Log($"Monster move {move}");
         return move;
     }
 

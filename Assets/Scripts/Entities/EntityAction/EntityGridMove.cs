@@ -7,6 +7,8 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
 {
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private Animator animator;
+    [SerializeField] private AudioSource WalkingAudio;
+    [SerializeField] private List<AudioClip> WalkingClips;
 
     public bool isAtMovePoint { get; private set; }
 
@@ -54,8 +56,7 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
     {
         Vector2 dir = movePoint - new Vector2(transform.position.x, transform.position.y);
         animator.SetBool("IsIdle", false);
-        //animator.SetFloat("MoveHorizontal", dir.x);
-        //animator.SetFloat("MoveVertical", dir.y);
+        PlayAudio();
 
         while (Vector3.Distance(transform.position, movePoint) > 0.05f)
         {
@@ -65,10 +66,21 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
 
         isAtMovePoint = true;
         animator.SetBool("IsIdle", true);
-        //animator.SetFloat("MoveHorizontal", 0f);
-        //animator.SetFloat("MoveVertical", 0f);
+        StopAudio();
     }
 
+    private void PlayAudio()
+    {
+        WalkingAudio.clip = WalkingClips[UnityEngine.Random.Range(0, WalkingClips.Count)];
+        WalkingAudio.Play();
+    }
+
+    private void StopAudio()
+    {
+        WalkingAudio.Stop();
+    }
+
+    //Interface methods
     public bool IsDead()
     {
         return isDead;
@@ -108,5 +120,10 @@ public class EntityGridMove : MonoBehaviour, IEntityAction
         CurrentMove = ActionState[CurrentMove].UpdateState();
 
         return (CurrentMove.Equals(MoveState.Done));
+    }
+
+    public void SetDead()
+    {
+        isDead = true;
     }
 }

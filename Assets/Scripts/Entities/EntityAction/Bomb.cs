@@ -8,6 +8,8 @@ public class Bomb : MonoBehaviour, IEntityAction
 {
     [SerializeField] private int ticksLeft = 3;
     [SerializeField] private float radius = 1f;
+    [SerializeField] private GameObject Sprite;
+    [SerializeField] private AudioSource BombAudio;
 
     private Dictionary<MoveState, MoveStateBase> ActionState;
     private MoveState CurrentMove;
@@ -33,6 +35,8 @@ public class Bomb : MonoBehaviour, IEntityAction
 
     private void ExplodeBomb()
     {
+        BombAudio.Play();
+
         Vector2 start = transform.position - Vector3.one * radius;
         Vector2 end = transform.position + Vector3.one * radius;
         
@@ -47,9 +51,11 @@ public class Bomb : MonoBehaviour, IEntityAction
 
         EventManager.Instance.OnTriggerExplodeBomb(transform.position, radius);
         Debug.Log("Explode");
-        //isDead = true;
+
+        Sprite.SetActive(false);
         isTurnOver = true;
-        Destroy(gameObject);
+        isDead = true;
+        Destroy(gameObject, 0.5f);
     }
 
     private void OnDrawGizmos()
@@ -59,11 +65,6 @@ public class Bomb : MonoBehaviour, IEntityAction
         Gizmos.DrawCube(transform.position, radius * Vector3.one);
     }
 
-    //public bool IsTurnOver()
-    //{
-    //    return isTurnOver;
-    //}
-
     public bool IsDead()
     {
         return isDead;
@@ -72,7 +73,6 @@ public class Bomb : MonoBehaviour, IEntityAction
     public bool UpdateState()
     {
         CurrentMove = ActionState[CurrentMove].UpdateState();
-        Debug.Log($"CurrenMove in Bomb: {CurrentMove}");
 
         return (CurrentMove.Equals(MoveState.Done));
     }
@@ -85,7 +85,7 @@ public class Bomb : MonoBehaviour, IEntityAction
 
     public void StartMove()
     {
-        //TODO: This is getting run multiple times per turn
+        //TODO: Update countdown UI
         isTurnOver = false;
         if (--ticksLeft <= 0)
         {

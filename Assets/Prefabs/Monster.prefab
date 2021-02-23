@@ -12,10 +12,11 @@ GameObject:
   - component: {fileID: 7624827685552282176}
   - component: {fileID: 7624827685552282179}
   - component: {fileID: 187581326379014263}
+  - component: {fileID: 5140612449679004673}
+  - component: {fileID: 4616546734742301113}
   - component: {fileID: 7624827685552282236}
   - component: {fileID: 7624827685552282237}
   - component: {fileID: -9093750563359766041}
-  - component: {fileID: 5140612449679004673}
   m_Layer: 8
   m_Name: Monster
   m_TagString: Player
@@ -135,6 +136,121 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!95 &5140612449679004673
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7624827685552282181}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ab413a3dc48070343b808a41fb02d554, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!82 &4616546734742301113
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7624827685552282181}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1.5
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.9
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &7624827685552282236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,6 +265,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   animator: {fileID: 5140612449679004673}
+  WalkingAudio: {fileID: 4616546734742301113}
+  WalkingClips:
+  - {fileID: 8300000, guid: bd2e21727b290c94586e70231e309cbd, type: 3}
+  - {fileID: 8300000, guid: 7e30146df5f9bb84d9d63ed8211311b9, type: 3}
+  - {fileID: 8300000, guid: dc51086bc85dc5448b059b6487ce0e0b, type: 3}
+  - {fileID: 8300000, guid: bf247942e61355f4d9d1804c09c647ee, type: 3}
+  - {fileID: 8300000, guid: 50d72a013f13ce0488147b799a838890, type: 3}
+  - {fileID: 8300000, guid: a829296e83128554cba9da342d83d361, type: 3}
 --- !u!114 &7624827685552282237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,22 +300,3 @@ MonoBehaviour:
   collisionLayer:
     serializedVersion: 2
     m_Bits: 256
---- !u!95 &5140612449679004673
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7624827685552282181}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ab413a3dc48070343b808a41fb02d554, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
