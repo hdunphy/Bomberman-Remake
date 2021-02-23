@@ -14,6 +14,8 @@ public class EndGameUIController : MonoBehaviour
 
     public Text Text;
 
+    private bool isMusicPlaying = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,6 +42,12 @@ public class EndGameUIController : MonoBehaviour
         AudioManager.Instance.PlaySound("Lose");
         NextLevelButton.gameObject.SetActive(false);
         ShowPopup("Player Loses");
+    }
+
+    public void ToggleMusic()
+    {
+        isMusicPlaying = !isMusicPlaying;
+        AudioManager.Instance.ToggleSound("Music", isMusicPlaying);
     }
 
     public void ShowPopup(string _message)

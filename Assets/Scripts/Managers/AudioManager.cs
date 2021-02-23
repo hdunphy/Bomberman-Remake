@@ -64,4 +64,21 @@ public class AudioManager : MonoBehaviour
 
         playAfterSound?.Invoke();
     }
+
+    public void ToggleSound(string name, bool play)
+    {
+        Sound _sound = Array.Find(Sounds, s => s.name == name);
+
+        if (_sound != null)
+        {
+            if (play)
+            {
+                _sound.AudioSource.Play();
+            }
+            else
+            {
+                _sound.AudioSource.Stop();
+            }
+        }
+    }
 }
