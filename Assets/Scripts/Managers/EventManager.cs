@@ -28,15 +28,8 @@ public class EventManager : MonoBehaviour
         PlayerDies?.Invoke();
     }
 
-    public Action<Vector3, float> ExplodeBomb;
-
     public void OnTriggerPlayerExit()
     {
         PlayerExit?.Invoke();
-    }
-
-    public void OnTriggerExplodeBomb(Vector3 position, float radius)
-    {
-        ExplodeBomb?.Invoke(position, radius);
     }
 }
